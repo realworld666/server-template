@@ -1,0 +1,23 @@
+{
+    "swagger": {
+      "basePath": "/",
+      "outputDirectory": "./dist",
+      "entryFile": "./server/index.ts",
+      "name": "Swagger Server Test",
+      "description": "Swagger Server Test - Application Server",
+      "license": "Some licence",
+      "produces": [
+        "application/json"
+      ],
+      "collectionFormat": "csv",
+      "securityDefinitions": {
+        "default": {
+          "type": "oauth2",
+          "authorizationUrl": "/auth.html",
+          "flow": "implicit",
+          "scopes": {}
+        }
+      }
+    }
+  }
+  
