@@ -1,12 +1,38 @@
 {
-  "entryFile": "index.ts",
+  "entryFile": "src/local.ts",
   "noImplicitAdditionalProperties": "throw-on-extras",
-  "controllerPathGlobs": ["**/*-controller.ts"],
+  "controllerPathGlobs": [
+    "**/*-controller.ts"
+  ],
   "spec": {
-    "outputDirectory": "dist",
-    "specVersion": 3
+    "specVersion": 3,
+    "basePath": "/",
+    "outputDirectory": "./generated",
+    "entryFile": "./src/local.ts",
+    "name": "Portfolio API",
+    "description": "Portfolio - Application Server",
+    "license": "Some licence",
+    "produces": [
+      "application/json"
+    ],
+    "collectionFormat": "csv",
+    "securityDefinitions": {
+      "default": {
+        "type": "oauth2",
+        "authorizationUrl": "/auth.html",
+        "flow": "implicit",
+        "scopes": {},
+        "description": "AWS Cognito"
+      },
+      "local": {
+        "type": "http",
+        "scheme": "basic",
+        "description": "Local/Offline"
+      }
+    }
   },
   "routes": {
-    "routesDir": "dist"
+    "routesDir": "./generated",
+    "authenticationModule": "src/authentication.ts"
   }
 }

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <style type="text/css">
+      body {
+          background-color: #e4ecf6;
+          font-family: 'Ubuntu', sans-serif;
+      }
+
+      .main {
+          background-color: #FFFFFF;
+          width: 400px;
+          padding-bottom: 30px;
+          margin: 7em auto;
+          border-radius: 1.5em;
+          box-shadow: 0px 11px 35px 2px rgba(0, 0, 0, 0.14);
+      }
+
+      .sign {
+          padding-top: 40px;
+          color: #4da7fe;
+          font-family: 'Ubuntu', sans-serif;
+          font-weight: bold;
+          font-size: 23px;
+      }
+
+      .un {
+          width: 76%;
+          color: rgb(38, 50, 56);
+          font-weight: 700;
+          font-size: 14px;
+          letter-spacing: 1px;
+          background: rgba(136, 126, 126, 0.04);
+          padding: 10px 20px;
+          border: none;
+          border-radius: 20px;
+          outline: none;
+          box-sizing: border-box;
+          border: 2px solid rgba(0, 0, 0, 0.02);
+          margin-bottom: 50px;
+          text-align: center;
+          margin-bottom: 27px;
+          font-family: 'Ubuntu', sans-serif;
+      }
+
+      form.form1 {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+      }
+
+      .pass {
+          width: 76%;
+          color: rgb(38, 50, 56);
+          font-weight: 700;
+          font-size: 14px;
+          letter-spacing: 1px;
+          background: rgba(136, 126, 126, 0.04);
+          padding: 10px 20px;
+          border-radius: 20px;
+          outline: none;
+          box-sizing: border-box;
+          border: 2px solid rgba(0, 0, 0, 0.02);
+          text-align: center;
+          margin-bottom: 27px;
+          font-family: 'Ubuntu', sans-serif;
+      }
+
+      .un:focus, .pass:focus {
+          border: 2px solid rgba(0, 0, 0, 0.18) !important;
+
+      }
+
+      .submit {
+          cursor: pointer;
+          margin-bottom: 10px;
+          border-radius: 5em;
+          color: #fff;
+          background: #4da7fe;
+          border: 0;
+          padding: 10px 40px;
+          font-family: 'Ubuntu', sans-serif;
+          font-size: 13px;
+          box-shadow: 0 0 20px 1px rgba(0, 0, 0, 0.04);
+      }
+
+      .subtitle {
+          text-shadow: 0px 0px 3px rgba(117, 117, 117, 0.12);
+          color: #83cdfb;
+          text-align: center;
+      }
+
+      a {
+          text-shadow: 0px 0px 3px rgba(117, 117, 117, 0.12);
+          color: #ebf3fb;
+          text-decoration: none
+      }
+
+      @media (max-width: 600px) {
+          .main {
+              border-radius: 0px;
+          }
+      }
+
+  </style>
+  <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
+  <meta content="width=device-width, initial-scale=1" name="viewport" />
+  <title>Sign in</title>
+</head>
+
+<body>
+<div class="main">
+  <p align="center" class="sign">Auth</p>
+  <p class="subtitle">DEVELOPMENT USE ONLY</p>
+  <form class="form1" id="form1" onsubmit="window.auth.requestCode(); return false;">
+    <input align="center" class="un " id="email" placeholder="email address" type="email">
+    <button align="center" class="submit" href="#" type="submit">Request login code</button>
+  </form>
+  <form class="form1" id="form2" onsubmit="window.auth.performLogin(); return false;" style="display: none;">
+    <input align="center" class="un " id="code" placeholder="access code" type="number">
+    <button align="center" class="submit" href="#" type="submit">Authenticate</button>
+  </form>
+</div>
+
+
+<script src="./main.js"></script>
+<script>
+  window.auth.configureCognito();
+</script>
+</body>
+</html>

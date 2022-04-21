@@ -1,4 +1,10 @@
 #!/bin/bash
 pushd server
-npm install
+yarn install
+npm run swagger
+pushd public
+yarn install
+npm run build
+popd
+npm run build
 popd

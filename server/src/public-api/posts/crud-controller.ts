@@ -1,15 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Patch,
-  Post,
-  Response,
-  Route,
-  SuccessResponse,
-  Tags,
-} from 'tsoa';
+import { Body, Controller, Delete, Get, Patch, Post, Request, Route, Security, SuccessResponse, Tags } from 'tsoa';
 import ApiError from '../../api-error';
 
 interface CrudObject {
@@ -24,9 +13,11 @@ export class CrudController extends Controller {
    * @returns the  word "hello"
    */
   @Get()
-  public async getMessage(): Promise<CrudObject> {
+  @Security('local')
+  @Security('default')
+  public async getMessage(@Request() request: any): Promise<CrudObject> {
     return {
-      message: 'hello',
+      message: request.user.email,
     };
   }
 
@@ -48,10 +39,7 @@ export class CrudController extends Controller {
    * @returns an echo of the data passed in
    */
   @Patch('{idPathParam}')
-  public async updateMessage(
-    idPathParam: number,
-    @Body() changes: CrudObject
-  ): Promise<string> {
+  public async updateMessage(idPathParam: number, @Body() changes: CrudObject): Promise<string> {
     return JSON.stringify(changes);
   }
 
@@ -60,7 +48,7 @@ export class CrudController extends Controller {
    * @param id The id of the thing to  delete
    */
   @Delete('{idPathParam}')
-  @Response<ApiError>(501, 'This method is not implemented')
+  // @Response<ApiError>(501, 'This method is not implemented')
   public async deleteMessage(idPathParam: number): Promise<void> {
     throw new ApiError('NotImplementedException', 501, `WIP ${idPathParam}`);
   }

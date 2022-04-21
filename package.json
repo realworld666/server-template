@@ -2,7 +2,7 @@
   "name": "server-template",
   "version": "1.0.0",
   "description": "This is a sample project of using two npm packages to simplify API documentation and testing. The project is a nodejs Typescript application using express  as the web application framework.",
-  "main": "index.js",
+  "main": "server/index.js",
   "dependencies": {},
   "devDependencies": {},
   "scripts": {

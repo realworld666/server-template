@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/headless-cms-test.iml" filepath="$PROJECT_DIR$/.idea/headless-cms-test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/server-template.iml" filepath="$PROJECT_DIR$/.idea/server-template.iml" />
     </modules>
   </component>
 </project>
