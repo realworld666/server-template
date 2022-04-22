@@ -7,7 +7,8 @@
   "devDependencies": {},
   "scripts": {
     "build": "./build.sh",
-    "start": "./start.sh"
+    "start": "./start.sh",
+    "test": "./test-all.sh"
   },
   "repository": {
     "type": "git",
