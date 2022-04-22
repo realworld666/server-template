@@ -1,6 +1,7 @@
 #!/bin/bash
 pushd server
 yarn install
+npm run clean
 npm run swagger
 pushd public
 yarn install

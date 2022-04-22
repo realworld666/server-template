@@ -8,7 +8,6 @@ import { Application, NextFunction, Request as ExRequest, Response as ExResponse
 import * as bodyParser from 'body-parser';
 import { singleton } from 'tsyringe';
 import express = require('express');
-import { Config } from './app-config';
 import ApiError from './api-error';
 import { RegisterRoutes } from '../generated/routes';
 import AppInterface from './app-interface';
@@ -21,14 +20,11 @@ const cors = require('cors');
 class App implements AppInterface {
   public readonly app: Application = express();
 
-  public readonly config: Config;
-
   private readonly PORT = process.env.PORT || 3030;
 
   private server: http.Server | null = null;
 
-  constructor(config: Config) {
-    this.config = config;
+  constructor() {
     // Use body parser to read sent json payloads
     this.app.use(
       bodyParser.urlencoded({

@@ -1,45 +1,36 @@
 import { container } from 'tsyringe';
-import App from './app';
-import { Config } from './app-config';
 import IamService from './services/iam-service';
-import AwsIamService from './services/aws/aws-iam-service';
-import MockIamService from './services/mock/mock-iam-service';
+import AwsIamService from './services/aws/auth/aws-iam-service';
+import MockIamService from './services/mock/auth/mock-iam-service';
+import AppInterface from './app-interface';
+import App from './app';
 
 /**
  * Install the current services for the app
- * @param config
  */
-export function installServices(config: Config) {
-  container.register('AppInterface', {
-    useValue: new App({
-      ...config,
-      env: 'local',
-    }),
-  });
-
-  if (config.authConfig.type === 'test') {
-    // Configure the IAM service to use local mock
-    container.register<IamService>('IamService', { useClass: MockIamService });
-  } else {
-    // Configure the IAM service to use AWS
-    container.register<IamService>('IamService', { useClass: AwsIamService });
+export function installServices(type: string) {
+  container.register<AppInterface>('AppInterface', { useClass: App });
+  switch (type) {
+    case 'test': {
+      // Configure the IAM service to use local mock
+      container.register<IamService>('IamService', { useClass: MockIamService });
+      break;
+    }
+    case 'cognito': {
+      // Configure the IAM service to use AWS
+      container.register<IamService>('IamService', { useClass: AwsIamService });
+      break;
+    }
+    default: {
+      throw new Error(`Unsupported install type ${type}`);
+    }
   }
-  // Register the config, so we can inject this in other constructors
-  container.register<Config>('Config', { useValue: config });
 }
 
 /**
  * As above but used by the unit tests so we should set up and global mock services here
- * @param config
  */
-export function installMockServices(config: Config) {
-  container.register('AppInterface', {
-    useValue: new App({
-      ...config,
-      env: 'local',
-    }),
-  });
-
+export function installMockServices() {
+  container.register<AppInterface>('AppInterface', { useClass: App });
   container.register<IamService>('IamService', { useClass: MockIamService });
-  container.register<Config>('Config', { useValue: config });
 }

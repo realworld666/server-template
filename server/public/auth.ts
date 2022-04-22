@@ -20,7 +20,7 @@ function doConfigure(config: ConfigResponse) {
   Auth.configure({
     region: config.auth.region,
     userPoolId: config.auth.userPoolId,
-    userPoolWebClientId: config.auth.webClientId,
+    userPoolWebClientId: config.auth.clientId,
   });
 }
 

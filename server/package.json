@@ -3,11 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "prebuild": "npm run clean",
     "clean": "rimraf dist",
     "lint": "eslint . --ext .ts",
     "lint:fix": "npm run lint -- --fix",
-    "build": "npm run swagger && tsc --build",
+    "build": "tsc --build",
     "dev": "nodemon",
     "start": "node dist/src/local.js",
     "test": "env TS_NODE_PROJECT='./src/tsconfig.json' mocha -r ts-node/register 'src/**/*.spec.ts'",

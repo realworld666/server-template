@@ -4,7 +4,8 @@ import { Request } from 'express';
 import { container } from 'tsyringe';
 import { BasicStrategy } from 'passport-http';
 import IamService from './services/iam-service';
-import { Config } from './app-config';
+import { Config } from './services/common/config/app-config';
+import AppConfigService from './services/common/config/app-config-service';
 
 let initialized = false;
 
@@ -39,7 +40,8 @@ async function verifyToken(token: string) {
  */
 function registerStrategies() {
   if (initialized) return;
-  const { config } = container.resolve('AppInterface');
+  const configService = container.resolve<AppConfigService>(AppConfigService);
+  const config = configService.getConfig();
 
   // If we're using a local mock
   if (config.authConfig.type === 'test') {

@@ -1,12 +1,9 @@
 import { createServer, proxy } from 'aws-serverless-express';
 import { container } from 'tsyringe';
-import { parseConfigFromEnvironment } from './app-config';
 import { installServices } from './installer';
 import AppInterface from './app-interface';
 
-const config = parseConfigFromEnvironment(process.env);
-
-installServices(config);
+installServices('cognito');
 
 const { app } = container.resolve<AppInterface>('AppInterface');
 

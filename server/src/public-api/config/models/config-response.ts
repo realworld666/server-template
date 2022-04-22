@@ -5,7 +5,7 @@ export interface ConfigResponse {
     type: string;
     region?: string;
     userPoolId?: string;
-    webClientId?: string;
+    clientId?: string;
   };
   emailRegex?: string;
 }

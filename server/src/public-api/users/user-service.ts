@@ -1,14 +1,14 @@
 import { inject, injectable } from 'tsyringe';
-import { Config, isValidEmail } from '../../app-config';
 import ApiError from '../../api-error';
 import IamService from '../../services/iam-service';
+import AppConfigService from '../../services/common/config/app-config-service';
 
 /**
  * User logic
  */
 @injectable()
 class UserService {
-  constructor(@inject('IamService') private iam: IamService, @inject('Config') private config: Config) {}
+  constructor(@inject('IamService') private iam: IamService, private configService: AppConfigService) {}
 
   /**
    * Create a new user if it doesnt already exist
@@ -16,7 +16,7 @@ class UserService {
    */
   public async registerUser(email: string): Promise<void> {
     const normalisedEmail = this.normaliseEmail(email);
-    if (!isValidEmail(normalisedEmail)) {
+    if (!this.configService.isValidEmail(normalisedEmail)) {
       throw new ApiError('INVALID_EMAIL', 400, 'Email address is invalid');
     }
 
@@ -31,7 +31,8 @@ class UserService {
   }
 
   private normaliseEmail(email: string) {
-    return this.config?.caseSensitiveEmail === true ? email : email.toLocaleLowerCase();
+    const config = this.configService.getConfig();
+    return config?.caseSensitiveEmail === true ? email : email.toLocaleLowerCase();
   }
 }
 
