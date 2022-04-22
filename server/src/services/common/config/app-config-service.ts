@@ -6,7 +6,7 @@ import IamService from '../../iam-service';
 export default class AppConfigService {
   private readonly requiredEnvironmentVariables: string[] = [];
 
-  private config: Config | undefined = undefined;
+  protected config: Config | undefined = undefined;
 
   constructor(@inject('IamService') private iamService: IamService) {
     this.buildConfig(process.env);

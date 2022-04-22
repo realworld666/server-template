@@ -4,6 +4,8 @@ import AwsIamService from './services/aws/auth/aws-iam-service';
 import MockIamService from './services/mock/auth/mock-iam-service';
 import AppInterface from './app-interface';
 import App from './app';
+import AppConfigService from './services/common/config/app-config-service';
+import { MockAppConfigService } from './services/mock/config/mock-app-config-service';
 
 /**
  * Install the current services for the app
@@ -32,5 +34,6 @@ export function installServices(type: string) {
  */
 export function installMockServices() {
   container.register<AppInterface>('AppInterface', { useClass: App });
+  container.register<AppConfigService>(AppConfigService, { useClass: MockAppConfigService });
   container.register<IamService>('IamService', { useClass: MockIamService });
 }

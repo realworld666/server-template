@@ -1,3 +1,5 @@
+[![Node.js CI](https://github.com/realworld666/server-template/actions/workflows/node.js.yml/badge.svg)](https://github.com/realworld666/server-template/actions/workflows/node.js.yml)
+
 # swagger-backend-api-sample
 
 This is a sample project of using two npm packages to simplify API documentation and testing. The project is a nodejs Typescript application using express  as the web application framework.
