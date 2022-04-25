@@ -36,7 +36,5 @@ jobs:
       - run: yarn install --frozen-lockfile
       - run: yarn run build --if-present
       - run: cd server && yarn test
-      - name: Publish Unit Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v1.33
 
 
