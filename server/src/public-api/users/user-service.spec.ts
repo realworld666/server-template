@@ -1,10 +1,13 @@
 /* eslint-disable @typescript-eslint/dot-notation */
 import 'reflect-metadata';
 import { container } from 'tsyringe';
-import { expect } from 'chai';
+import chai, { expect } from 'chai';
 import UserService from './user-service';
 import AppConfigService from '../../services/common/config/app-config-service';
 import { MockAppConfigService } from '../../services/mock/config/mock-app-config-service';
+import ApiError from '../../api-error';
+
+chai.use(require('chai-as-promised'));
 
 describe('User Service', () => {
   it('create a new user', async () => {
@@ -12,6 +15,8 @@ describe('User Service', () => {
     const userService = container.resolve(UserService);
 
     await userService.registerUser('test@test.com');
+
+    await expect(userService.registerUser('bob')).to.be.rejectedWith(ApiError);
   });
 
   it('should normalise email', async () => {
