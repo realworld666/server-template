@@ -2,8 +2,10 @@
 import 'reflect-metadata';
 import { container } from 'tsyringe';
 import chai, { expect } from 'chai';
-import DynamoDbService from './dynamo-db-service';
 import { FieldType } from '../../common/database/database-field-definition';
+import AppConfigService from '../../common/config/app-config-service';
+import { MockAppConfigService } from '../../mock/config/mock-app-config-service';
+import { DatabaseService } from '../../common/database/database-service';
 
 chai.use(require('chai-as-promised'));
 
@@ -17,10 +19,17 @@ interface TestObject {
 }
 
 describe('Dynamo DB Service', () => {
-  it('create a table', async () => {
-    // the single test
-    const dbService = container.resolve(DynamoDbService);
+  let configService: MockAppConfigService;
+  let dbService: DatabaseService;
+  before(() => {
+    configService = container.resolve(AppConfigService) as MockAppConfigService;
+    configService.setPartialConfig({
+      region: 'eu-west-1',
+    });
 
+    dbService = container.resolve<DatabaseService>('DatabaseService');
+  });
+  it('create a table', async () => {
     try {
       await dbService.deleteTable('testTable');
     } catch {
@@ -37,7 +46,6 @@ describe('Dynamo DB Service', () => {
   });
 
   it('should add something to the table', async () => {
-    const dbService = container.resolve(DynamoDbService);
     const testObject: TestObject = {
       id: 'someid',
       chatState: {
@@ -50,7 +58,6 @@ describe('Dynamo DB Service', () => {
   });
 
   it('should get something from the table', async () => {
-    const dbService = container.resolve(DynamoDbService);
     const doc = await dbService.get<TestObject>('testTable', { id: 'someid' });
     expect(doc.id).to.eq('someid');
     expect;

@@ -28,7 +28,7 @@ export default class MockDatabaseService implements DatabaseService {
 
   get<T>(tableName: string, key: { [p: string]: any }): Promise<T> {
     // @ts-ignore
-    return Promise.resolve(undefined);
+    return Promise.resolve(key);
   }
 
   insert<T>(tableName: string, objectToInsert: T): Promise<void> {

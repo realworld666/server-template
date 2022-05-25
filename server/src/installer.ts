@@ -6,6 +6,9 @@ import AppInterface from './app-interface';
 import App from './app';
 import AppConfigService from './services/common/config/app-config-service';
 import { MockAppConfigService } from './services/mock/config/mock-app-config-service';
+import { DatabaseService } from './services/common/database/database-service';
+import DynamoDbService from './services/aws/database/dynamo-db-service';
+import MockDatabaseService from './services/mock/database/mock-database-service';
 
 /**
  * Install the current services for the app
@@ -18,9 +21,14 @@ export function installServices(type: string) {
       container.register<IamService>('IamService', { useClass: MockIamService }, { lifecycle: Lifecycle.Singleton });
       break;
     }
-    case 'cognito': {
-      // Configure the IAM service to use AWS
+    case 'aws': {
+      // Install the aws services
       container.register<IamService>('IamService', { useClass: AwsIamService }, { lifecycle: Lifecycle.Singleton });
+      container.register<DatabaseService>(
+        'DatabaseService',
+        { useClass: DynamoDbService },
+        { lifecycle: Lifecycle.Singleton }
+      );
       break;
     }
     default: {
@@ -40,4 +48,9 @@ export function installMockServices() {
     { lifecycle: Lifecycle.Singleton }
   );
   container.register<IamService>('IamService', { useClass: MockIamService }, { lifecycle: Lifecycle.Singleton });
+  container.register<DatabaseService>(
+    'DatabaseService',
+    { useClass: MockDatabaseService },
+    { lifecycle: Lifecycle.Singleton }
+  );
 }
