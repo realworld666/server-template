@@ -1,33 +1,41 @@
-import { inject, singleton } from 'tsyringe';
+import { autoInjectable, inject, injectAll, singleton } from 'tsyringe';
 import { Config } from './app-config';
-import IamService from '../../iam-service';
+import IamService from '../iam/iam-service';
+import { Configurable } from './configurable';
 
 @singleton()
+@autoInjectable()
 export default class AppConfigService {
   private readonly requiredEnvironmentVariables: string[] = [];
 
   protected config: Config | undefined = undefined;
 
-  constructor(@inject('IamService') private iamService: IamService) {
+  constructor(
+    @inject('IamService') private iamService: IamService,
+    @injectAll('Configurable') private configurables: Configurable[]
+  ) {
     this.buildConfig(process.env);
   }
 
   private buildConfig(environment: typeof process.env) {
-    const requiredEnvironment = this.requiredEnvironmentVariables.concat(
-      this.iamService.getRequiredEnvironmentVariables()
-    );
+    let requiredEnvironment: string[] = this.requiredEnvironmentVariables;
+    this.configurables.forEach((c) => {
+      requiredEnvironment = requiredEnvironment.concat(c.getRequiredEnvironmentVariables());
+    });
+
     const missingEnvironmentVariables = requiredEnvironment.filter((value) => environment[value] === undefined);
     if (missingEnvironmentVariables?.length > 0) {
       throw new Error(`Missing required env parameters: ${missingEnvironmentVariables.join(', ')}`);
     }
 
     this.config = {
-      authConfig: this.iamService.getAuthConfig(),
       env: environment.ENV,
       validEmailMatch: environment.EMAIL_REGEX ? new RegExp(environment.EMAIL_REGEX) : undefined,
       showTestBanner: environment.SHOW_TEST_BANNER === 'true',
       readonly: environment.READONLY === 'true',
       fromAddress: environment.FROM_ADDRESS,
+      // add all of the configurable config objects to the array
+      ...this.configurables.map((c) => c.getConfig()),
     };
   }
 

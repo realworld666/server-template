@@ -1,6 +1,6 @@
 import { inject, injectable } from 'tsyringe';
 import ApiError from '../../api-error';
-import IamService from '../../services/iam-service';
+import IamService from '../../services/common/iam/iam-service';
 import AppConfigService from '../../services/common/config/app-config-service';
 
 /**

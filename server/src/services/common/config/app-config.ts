@@ -3,7 +3,6 @@ export interface AppAuthConfig {
 }
 
 export type Config = {
-  authConfig: AppAuthConfig;
   env?: string;
   selfTestKey?: string;
   selfTestUser?: string;
@@ -13,4 +12,5 @@ export type Config = {
   readonly?: boolean;
   fromAddress?: string;
   notificationToAddress?: string;
+  [key: string]: any | undefined;
 };

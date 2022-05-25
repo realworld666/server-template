@@ -1,5 +1,5 @@
-import { AuthUser } from '../public-api/auth-user';
-import { AppAuthConfig } from './common/config/app-config';
+import { AuthUser } from '../../../public-api/auth-user';
+import { AppAuthConfig } from '../config/app-config';
 
 /**
  * Base interface for cloud based user management service
@@ -16,8 +16,4 @@ export default interface IamService {
    * @param token the JWT token
    */
   verifyToken(token: string): Promise<AuthUser>;
-
-  getRequiredEnvironmentVariables(): string[];
-
-  getAuthConfig(): AppAuthConfig;
 }

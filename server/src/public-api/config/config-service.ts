@@ -14,7 +14,12 @@ export class ConfigService {
     return {
       version: '2.1.0',
       showTestBanner: config.showTestBanner,
-      auth: config.authConfig,
+      auth: {
+        type: config.auth.type,
+        region: config.auth.region,
+        userPoolId: config.auth.userPoolId,
+        clientId: config.auth.clientId,
+      },
       emailRegex: config.validEmailMatch?.source,
     };
   }

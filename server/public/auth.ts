@@ -1,13 +1,13 @@
 import { CognitoUser } from 'amazon-cognito-identity-js';
-import { ConfigControllerService, ConfigResponse, RegisterData, UserControllerService } from '../generated';
 import { Auth } from '@aws-amplify/auth';
+import {ConfigControllerService, ConfigResponse, RegisterData, UserControllerService} from "../generated";
 
 const mockSetupLocalStorageKey = 'mock-auth';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function configureCognito() {
-  ConfigControllerService.getConfig().then((config) => {
-    if (config.auth.type === 'cognito') {
+  ConfigControllerService.getConfig().then((config:any) => {
+    if (config.auth.type === 'aws') {
       console.log(JSON.stringify(config.auth));
       doConfigure(config);
     } else {

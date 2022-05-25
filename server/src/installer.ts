@@ -1,5 +1,5 @@
 import { container, Lifecycle } from 'tsyringe';
-import IamService from './services/iam-service';
+import IamService from './services/common/iam/iam-service';
 import AwsIamService from './services/aws/auth/aws-iam-service';
 import MockIamService from './services/mock/auth/mock-iam-service';
 import AppInterface from './app-interface';

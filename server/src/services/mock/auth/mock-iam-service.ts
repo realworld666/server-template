@@ -1,4 +1,4 @@
-import IamService from '../../iam-service';
+import IamService from '../../common/iam/iam-service';
 import { AuthUser } from '../../../public-api/auth-user';
 import { AppAuthConfig } from '../../common/config/app-config';
 

@@ -3,7 +3,7 @@ import { Strategy as BearerStrategy } from 'passport-http-bearer';
 import { Request } from 'express';
 import { container } from 'tsyringe';
 import { BasicStrategy } from 'passport-http';
-import IamService from './services/iam-service';
+import IamService from './services/common/iam/iam-service';
 import { Config } from './services/common/config/app-config';
 import AppConfigService from './services/common/config/app-config-service';
 
@@ -17,7 +17,7 @@ let initialized = false;
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function verifyLogin(userEmail: string, password: string) {
   const config = container.resolve<Config>('Config');
-  if (config.authConfig.type !== 'test') {
+  if (config.auth.type !== 'test') {
     return null;
   }
 
@@ -44,7 +44,7 @@ function registerStrategies() {
   const config = configService.getConfig();
 
   // If we're using a local mock
-  if (config.authConfig.type === 'test') {
+  if (config.auth.type === 'test') {
     passport.use(
       'local',
       new BasicStrategy(async (username, password, done) => {

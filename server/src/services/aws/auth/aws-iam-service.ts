@@ -1,18 +1,19 @@
-import { singleton } from 'tsyringe';
+import { registry, singleton } from 'tsyringe';
 import AWS, { CognitoIdentityServiceProvider } from 'aws-sdk';
-import IamService from '../../iam-service';
+import IamService from '../../common/iam/iam-service';
 import ApiError from '../../../api-error';
 
-import { AppAuthConfig } from '../../common/config/app-config';
 import { validate } from './cognito';
 import { AuthUser } from '../../../public-api/auth-user';
 import { CognitoAuthConfig } from './auth-config';
+import { Configurable } from '../../common/config/configurable';
 
 /**
  * AWS Cognito user management service
  */
 @singleton()
-export default class AwsIamService implements IamService {
+@registry([{ token: 'Configurable', useClass: AwsIamService }])
+export default class AwsIamService implements IamService, Configurable {
   private readonly requiredEnvironmentVariables: string[] = ['COGNITO_USER_POOL_ID', 'COGNITO_CLIENT_ID', 'REGION'];
 
   private readonly authConfig: CognitoAuthConfig;
@@ -39,8 +40,8 @@ export default class AwsIamService implements IamService {
     return this.requiredEnvironmentVariables;
   }
 
-  getAuthConfig(): AppAuthConfig {
-    return this.authConfig;
+  getConfig(): {} {
+    return { auth: this.authConfig };
   }
 
   /**
