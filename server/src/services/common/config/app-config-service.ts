@@ -1,6 +1,5 @@
-import { autoInjectable, inject, injectAll, singleton } from 'tsyringe';
+import { autoInjectable, injectAll, singleton } from 'tsyringe';
 import { Config } from './app-config';
-import IamService from '../iam/iam-service';
 import { Configurable } from './configurable';
 
 @singleton()
@@ -10,10 +9,7 @@ export default class AppConfigService {
 
   protected config: Config | undefined = undefined;
 
-  constructor(
-    @inject('IamService') private iamService: IamService,
-    @injectAll('Configurable') private configurables: Configurable[]
-  ) {
+  constructor(@injectAll('Configurable') private configurables: Configurable[]) {
     this.buildConfig(process.env);
   }
 
@@ -34,8 +30,7 @@ export default class AppConfigService {
       showTestBanner: environment.SHOW_TEST_BANNER === 'true',
       readonly: environment.READONLY === 'true',
       fromAddress: environment.FROM_ADDRESS,
-      // add all of the configurable config objects to the array
-      ...this.configurables.map((c) => c.getConfig()),
+      ...this.configurables.map((c) => c.getConfig()).reduce((result, current) => Object.assign(result, current), {}),
     };
   }
 

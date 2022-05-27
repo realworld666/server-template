@@ -12,7 +12,6 @@ import { Configurable } from '../../common/config/configurable';
  * AWS Cognito user management service
  */
 @singleton()
-@registry([{ token: 'Configurable', useClass: AwsIamService }])
 export default class AwsIamService implements IamService, Configurable {
   private readonly requiredEnvironmentVariables: string[] = ['COGNITO_USER_POOL_ID', 'COGNITO_CLIENT_ID', 'REGION'];
 

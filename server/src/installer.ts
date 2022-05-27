@@ -10,6 +10,12 @@ import { DatabaseService } from './services/common/database/database-service';
 import DynamoDbService from './services/aws/database/dynamo-db-service';
 import MockDatabaseService from './services/mock/database/mock-database-service';
 
+function registerConfigurables(param: any[]) {
+  param.forEach((service) => {
+    container.register('Configurable', { useClass: service }, { lifecycle: Lifecycle.Singleton });
+  });
+}
+
 /**
  * Install the current services for the app
  */
@@ -19,6 +25,12 @@ export function installServices(type: string) {
     case 'test': {
       // Configure the IAM service to use local mock
       container.register<IamService>('IamService', { useClass: MockIamService }, { lifecycle: Lifecycle.Singleton });
+      container.register<DatabaseService>(
+        'DatabaseService',
+        { useClass: MockDatabaseService },
+        { lifecycle: Lifecycle.Singleton }
+      );
+      registerConfigurables([MockIamService, MockDatabaseService]);
       break;
     }
     case 'aws': {
@@ -29,6 +41,7 @@ export function installServices(type: string) {
         { useClass: DynamoDbService },
         { lifecycle: Lifecycle.Singleton }
       );
+      registerConfigurables([AwsIamService, DynamoDbService]);
       break;
     }
     default: {
@@ -42,15 +55,16 @@ export function installServices(type: string) {
  */
 export function installMockServices() {
   container.register<AppInterface>('AppInterface', { useClass: App }, { lifecycle: Lifecycle.Singleton });
+  container.register<IamService>('IamService', { useClass: MockIamService }, { lifecycle: Lifecycle.Singleton });
   container.register<AppConfigService>(
     AppConfigService,
     { useClass: MockAppConfigService },
     { lifecycle: Lifecycle.Singleton }
   );
-  container.register<IamService>('IamService', { useClass: MockIamService }, { lifecycle: Lifecycle.Singleton });
   container.register<DatabaseService>(
     'DatabaseService',
     { useClass: MockDatabaseService },
     { lifecycle: Lifecycle.Singleton }
   );
+  registerConfigurables([MockIamService, MockDatabaseService]);
 }

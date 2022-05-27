@@ -1,16 +1,16 @@
 /* eslint-disable class-methods-use-this,@typescript-eslint/no-unused-vars */
 import { DatabaseService } from '../../common/database/database-service';
 import { DatabaseFieldDefinition } from '../../common/database/database-field-definition';
-import { DatabaseConfig } from '../../common/database/database-config';
+import { Configurable } from '../../common/config/configurable';
 
-export default class MockDatabaseService implements DatabaseService {
+export default class MockDatabaseService implements DatabaseService, Configurable {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   createTable(tableName: string, primaryKey: string, fields: DatabaseFieldDefinition[]): Promise<void> {
     return Promise.resolve(undefined);
   }
 
-  getConfig(): DatabaseConfig {
-    return { type: 'test' };
+  getConfig(): {} {
+    return { db: { type: 'test' } };
   }
 
   getRequiredEnvironmentVariables(): string[] {

@@ -12,7 +12,6 @@ interface AttributeDefinition {
 
 @singleton()
 @autoInjectable()
-@registry([{ token: 'Configurable', useClass: DynamoDbService }])
 export default class DynamoDbService implements DatabaseService, Configurable {
   readonly requiredEnvironmentVariables: string[] = ['REGION'];
 

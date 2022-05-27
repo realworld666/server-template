@@ -1,8 +1,8 @@
 import IamService from '../../common/iam/iam-service';
 import { AuthUser } from '../../../public-api/auth-user';
-import { AppAuthConfig } from '../../common/config/app-config';
+import { Configurable } from '../../common/config/configurable';
 
-export default class MockIamService implements IamService {
+export default class MockIamService implements IamService, Configurable {
   // eslint-disable-next-line class-methods-use-this
   createUser(email: string): Promise<void> {
     console.log(email);
@@ -15,14 +15,15 @@ export default class MockIamService implements IamService {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  getAuthConfig(): AppAuthConfig {
-    return {
-      type: 'test',
-    };
-  }
-
-  // eslint-disable-next-line class-methods-use-this
   getRequiredEnvironmentVariables(): string[] {
     return [];
+  }
+
+  getConfig(): {} {
+    return {
+      auth: {
+        type: 'test',
+      },
+    };
   }
 }

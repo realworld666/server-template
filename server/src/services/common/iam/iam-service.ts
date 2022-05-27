@@ -1,5 +1,4 @@
 import { AuthUser } from '../../../public-api/auth-user';
-import { AppAuthConfig } from '../config/app-config';
 
 /**
  * Base interface for cloud based user management service
