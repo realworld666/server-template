@@ -18,6 +18,7 @@ export default class MockDatabaseService implements DatabaseService, Configurabl
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   deleteTable(tableName: string): Promise<void> {
     return Promise.resolve(undefined);
   }
@@ -31,7 +32,11 @@ export default class MockDatabaseService implements DatabaseService, Configurabl
     return Promise.resolve(key);
   }
 
-  insert<T>(tableName: string, objectToInsert: T): Promise<void> {
+  insert<T>(tableName: string, objectToInsert: T): Promise<string> {
+    return Promise.resolve('');
+  }
+
+  insertWithId<T>(collectionPath: string, key: { [key: string]: any }, objectToInsert: T): Promise<void> {
     return Promise.resolve(undefined);
   }
 

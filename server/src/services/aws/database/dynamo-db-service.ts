@@ -1,4 +1,4 @@
-import { autoInjectable, registry, singleton } from 'tsyringe';
+import { autoInjectable, singleton } from 'tsyringe';
 import AWS from 'aws-sdk';
 import { DynamoDbConfig } from './dynamo-db-config';
 import { DatabaseFieldDefinition, FieldType } from '../../common/database/database-field-definition';
@@ -23,8 +23,6 @@ export default class DynamoDbService implements DatabaseService, Configurable {
 
   constructor() {
     this.dbConfig = DynamoDbService.buildDatabaseConfig(process.env);
-
-    AWS.config.update({ region: this.dbConfig.region });
 
     if (this.dbConfig.endpoint) {
       this.dynamoDb = new AWS.DynamoDB({ endpoint: this.dbConfig.endpoint });
@@ -89,7 +87,12 @@ export default class DynamoDbService implements DatabaseService, Configurable {
     await this.dynamoDb.deleteTable({ TableName: tableName }).promise();
   }
 
-  async insert<T>(tableName: string, objectToInsert: T) {
+  async insert<T>(tableName: string, objectToInsert: T): Promise<string> {
+    await this.documentClient.put({ TableName: tableName, Item: objectToInsert }).promise();
+    return '';
+  }
+
+  async insertWithId<T>(tableName: string, key: { [key: string]: any }, objectToInsert: T): Promise<void> {
     await this.documentClient.put({ TableName: tableName, Item: objectToInsert }).promise();
   }
 

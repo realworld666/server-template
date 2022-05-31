@@ -1,5 +1,5 @@
-import { registry, singleton } from 'tsyringe';
-import AWS, { CognitoIdentityServiceProvider } from 'aws-sdk';
+import { singleton } from 'tsyringe';
+import { CognitoIdentityServiceProvider } from 'aws-sdk';
 import IamService from '../../common/iam/iam-service';
 import ApiError from '../../../api-error';
 
@@ -22,7 +22,6 @@ export default class AwsIamService implements IamService, Configurable {
   constructor() {
     this.authConfig = AwsIamService.buildAuthConfig(process.env);
 
-    AWS.config.update({ region: this.authConfig.region });
     this.cognito = new CognitoIdentityServiceProvider();
   }
 
