@@ -38,6 +38,7 @@ export async function setupFirebase() {
     { useClass: FirebaseService },
     { lifecycle: Lifecycle.Singleton }
   );
+
   const bootstrap = container.resolve<FirebaseService>('CloudServiceBootstrap');
   await bootstrap.init();
 
