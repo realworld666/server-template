@@ -38,6 +38,9 @@ jobs:
           key: ${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
       - run: yarn install --frozen-lockfile
       - run: yarn run build --if-present
-      - run: cd server && yarn test
+      - name: Run Tests
+        uses: w9jds/firebase-action@master
+        with:
+          args: emulators:exec --only firestore \"cd server && yarn test\"
 
 
