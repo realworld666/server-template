@@ -41,7 +41,8 @@ jobs:
       - name: Run Tests
         uses: w9jds/firebase-action@master
         with:
-          args: emulators:exec --only firestore \"cd server && yarn test\"
+          args: emulators:exec
+        run: cd server && yarn test
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
 
