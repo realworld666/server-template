@@ -6,9 +6,9 @@
   "dependencies": {},
   "devDependencies": {},
   "scripts": {
-    "build": "build",
-    "start": "start",
-    "test": "test-all"
+    "build": "./build",
+    "start": "./start",
+    "test": "./test-all"
   },
   "repository": {
     "type": "git",
