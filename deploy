@@ -1,0 +1,22 @@
+#!/bin/bash
+set -e # stop on error
+
+if [ -z ${1+x} ]; then echo "Usage: ./deploy [STACK]"; exit 1; fi
+
+STACK=$1
+
+pushd infrastructure
+
+pulumi login s3://$PULUMI_BUCKET_NAME
+
+pulumi stack select $STACK --non-interactive
+
+pulumi_up(){
+    pulumi up --yes --non-interactive
+}
+
+# If pulumi deploy fails, wait 30 seconds (increasing with each failure) and try again up to 5 times
+for i in $(seq 1 5); do pulumi_up && s=0 && break || s=$? && sleep $(( 30 * $i)); done; (exit $s)
+
+pulumi stack output --json > ../deploy-outputs.json
+popd

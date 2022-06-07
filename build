@@ -1,0 +1,25 @@
+#!/bin/bash
+
+set -e # stop on error
+
+if [ -z ${1+x} ]; then echo "Usage: ./build [STACK]"; exit 1; fi
+
+STACK=$1
+# Build server first as the client depends on server generated files
+pushd server
+    npm i
+    npm run swagger
+
+    pushd public
+        npm i
+        npm run build
+    popd
+
+    npm run build
+    cp package.json ./dist/
+    cp package-lock.json ./dist/
+
+    pushd dist
+        npm ci --audit --only=prod
+    popd
+popd

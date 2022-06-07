@@ -12,7 +12,7 @@ export default class FirebaseService implements CloudServiceBootstrap {
   async init(): Promise<void> {
     if (!FirebaseService.initialized) {
       // if the environment variable contains a JSON object, parse it
-      if (process.env.GOOGLE_APPLICATION_CREDENTIALS!.charAt(0) === '{') {
+      if (process.env.GOOGLE_APPLICATION_CREDENTIALS && process.env.GOOGLE_APPLICATION_CREDENTIALS.charAt(0) === '{') {
         this.app = admin.initializeApp({
           credential: admin.credential.cert(JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS!)),
         });
