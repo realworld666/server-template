@@ -81,7 +81,7 @@ export default class AwsIamService implements IamService, Configurable {
       token
     );
 
-    if (authResult.valid) {
+    if (authResult.valid && typeof authResult.token === 'object') {
       const userEmail = authResult.token.email as string;
       return {
         email: userEmail,
