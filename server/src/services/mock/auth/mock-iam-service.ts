@@ -1,4 +1,4 @@
-import IamService from '../../common/iam/iam-service';
+import { IamService } from '../../common/iam/iam-service';
 import { AuthUser } from '../../../public-api/auth-user';
 import { Configurable } from '../../common/config/configurable';
 
