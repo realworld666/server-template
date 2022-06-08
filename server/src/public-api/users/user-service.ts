@@ -1,6 +1,6 @@
 import { inject, injectable } from 'tsyringe';
 import ApiError from '../../api-error';
-import IamService from '../../services/common/iam/iam-service';
+import { AccountExistsError, IamService } from '../../services/common/iam/iam-service';
 import AppConfigService from '../../services/common/config/app-config-service';
 
 /**
@@ -24,7 +24,7 @@ class UserService {
       await this.iam.createUser(email);
     } catch (error: any) {
       // if this throws an exception about the user already existing then ignore it as thats valid
-      if (error.code !== 'UsernameExistsException') {
+      if (error instanceof AccountExistsError) {
         throw error;
       }
     }

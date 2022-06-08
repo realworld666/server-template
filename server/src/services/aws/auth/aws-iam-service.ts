@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
 import { CognitoIdentityServiceProvider } from 'aws-sdk';
-import IamService from '../../common/iam/iam-service';
+import { AccountExistsError, IamService } from '../../common/iam/iam-service';
 import ApiError from '../../../api-error';
 
 import { validate } from './cognito';
@@ -47,13 +47,24 @@ export default class AwsIamService implements IamService, Configurable {
    * @param email
    */
   async createUser(email: string): Promise<void> {
-    await this.cognito
-      .adminCreateUser({
-        UserPoolId: this.authConfig.userPoolId,
-        Username: email,
-        MessageAction: 'SUPPRESS',
-      })
-      .promise();
+    try {
+      await this.cognito
+        .adminCreateUser({
+          UserPoolId: this.authConfig.userPoolId,
+          Username: email,
+          MessageAction: 'SUPPRESS',
+        })
+        .promise();
+    } catch (error: any) {
+      // if this throws an exception about the user already existing then ignore it as thats valid
+      switch (error.code) {
+        case 'UsernameExistsException': {
+          throw new AccountExistsError();
+        }
+        default:
+          throw error;
+      }
+    }
   }
 
   /**

@@ -2,7 +2,7 @@ import { inject, singleton } from 'tsyringe';
 
 import { auth } from 'firebase-admin';
 import { getAuth } from 'firebase-admin/auth';
-import IamService from '../../common/iam/iam-service';
+import { AccountExistsError, IamService } from '../../common/iam/iam-service';
 import ApiError from '../../../api-error';
 
 import { AuthUser } from '../../../public-api/auth-user';
@@ -48,10 +48,17 @@ export default class FirebaseIamService implements IamService, Configurable {
    * @param email
    */
   async createUser(email: string): Promise<void> {
-    const user = await this.auth.createUser({
-      email,
-    });
-    console.log(JSON.stringify(user));
+    try {
+      const user = await this.auth.createUser({
+        email,
+      });
+      console.log(JSON.stringify(user));
+    } catch (error: any) {
+      if (error.code === 'auth/email-already-exists') {
+        throw new AccountExistsError();
+      }
+      throw error;
+    }
   }
 
   /**

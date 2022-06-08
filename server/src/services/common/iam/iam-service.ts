@@ -3,7 +3,7 @@ import { AuthUser } from '../../../public-api/auth-user';
 /**
  * Base interface for cloud based user management service
  */
-export default interface IamService {
+export interface IamService {
   /**
    * Register a new user
    * @param email the email of the user to create
@@ -16,3 +16,5 @@ export default interface IamService {
    */
   verifyToken(token: string): Promise<AuthUser>;
 }
+
+export class AccountExistsError extends Error {}
