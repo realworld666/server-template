@@ -2,7 +2,7 @@
 import { container } from 'tsyringe';
 import { expect } from 'chai';
 import MockIamService from './services/mock/auth/mock-iam-service';
-import IamService from './services/common/iam/iam-service';
+import { IamService } from './services/common/iam/iam-service';
 import { Configurable } from './services/common/config/configurable';
 
 describe('Injection Tests', () => {

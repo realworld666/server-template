@@ -3,7 +3,7 @@ import { Strategy as BearerStrategy } from 'passport-http-bearer';
 import { Request } from 'express';
 import { container } from 'tsyringe';
 import { BasicStrategy } from 'passport-http';
-import IamService from './services/common/iam/iam-service';
+import { IamService } from './services/common/iam/iam-service';
 import { Config } from './services/common/config/app-config';
 import AppConfigService from './services/common/config/app-config-service';
 

@@ -1,6 +1,6 @@
 import { container } from 'tsyringe';
 import FirebaseIamService from './firebase-iam-service';
-import IamService from '../../common/iam/iam-service';
+import { IamService } from '../../common/iam/iam-service';
 import { setupFirebase } from '../../../test-helper.spec';
 
 describe('Firebase IAM Service', () => {
