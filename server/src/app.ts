@@ -8,13 +8,12 @@ import { Application, NextFunction, Request as ExRequest, Response as ExResponse
 import * as bodyParser from 'body-parser';
 import { singleton } from 'tsyringe';
 import express = require('express');
+import cors from 'cors';
 import ApiError from './api-error';
 import { RegisterRoutes } from '../generated/routes';
 import AppInterface from './app-interface';
 
 import swaggerDocument from '../generated/swagger.json';
-
-const cors = require('cors');
 
 @singleton()
 class App implements AppInterface {
@@ -24,6 +23,12 @@ class App implements AppInterface {
 
   private server: http.Server | null = null;
 
+  private readonly corsAllowlist = ['https://example1.com', 'https://example2.com'];
+
+  private readonly corsOptions: cors.CorsOptions = {
+    origin: this.corsAllowlist,
+  };
+
   constructor() {
     // Use body parser to read sent json payloads
     this.app.use(
@@ -31,8 +36,7 @@ class App implements AppInterface {
         extended: true,
       })
     );
-    this.app.use(cors());
-    this.app.options('*', cors(this.corsOptionsDelegate));
+    this.app.use(cors(this.corsOptions));
     this.app.set('etag', false);
     this.app.use(bodyParser.json());
     this.app.use(morgan('tiny'));
@@ -46,7 +50,7 @@ class App implements AppInterface {
     RegisterRoutes(this.app);
 
     // Handle not found errors
-    this.app.use(function notFoundHandler(_request: any, res: ExResponse) {
+    this.app.use(function notFoundHandler(_request: ExRequest, res: ExResponse) {
       res.status(404).send({
         message: 'Not Found',
       });
@@ -85,19 +89,6 @@ class App implements AppInterface {
     });
   }
 
-  private allowlist = ['http://example1.com', 'http://example2.com'];
-
-  private corsOptionsDelegate(req: any, callback: any) {
-    console.log('CORS!');
-    let corsOptions;
-    if (this.allowlist.indexOf(req.header('Origin')) !== -1) {
-      corsOptions = { origin: true }; // reflect (enable) the requested origin in the CORS response
-    } else {
-      corsOptions = { origin: false }; // disable CORS for this request
-    }
-    callback(null, corsOptions); // callback expects two parameters: error and options
-  }
-
   /**
    * Start the server
    */
@@ -115,7 +106,7 @@ class App implements AppInterface {
    * Stop the server if running
    */
   public stop(): Promise<boolean> {
-    return new Promise<boolean>((resolve: any) => {
+    return new Promise<boolean>((resolve: Function) => {
       if (this.server) {
         this.server.close(() => {
           resolve(true);

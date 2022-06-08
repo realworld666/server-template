@@ -45,7 +45,7 @@ const loadPemsCached = async (issuer: string) => {
   return pems;
 };
 
-export type CognitoValidationResult = { valid: true; token: any } | { valid: false; reason: string };
+export type CognitoValidationResult = { valid: true; token: JwtPayload | string } | { valid: false; reason: string };
 
 export type CognitoValidation = (token: string) => Promise<CognitoValidationResult>;
 
@@ -80,7 +80,7 @@ export const validate = async (config: CognitoConfig, token: string): Promise<Co
   }
 
   try {
-    const decodedToken: any = jwt.verify(token, pem, { issuer });
+    const decodedToken: JwtPayload | string = jwt.verify(token, pem, { issuer });
     return { valid: true, token: decodedToken };
   } catch (err: any) {
     return { valid: false, reason: err.message };

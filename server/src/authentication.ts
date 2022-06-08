@@ -4,8 +4,9 @@ import { Request } from 'express';
 import { container } from 'tsyringe';
 import { BasicStrategy } from 'passport-http';
 import { IamService } from './services/common/iam/iam-service';
-import { Config } from './services/common/config/app-config';
 import AppConfigService from './services/common/config/app-config-service';
+import { ConfigService } from './public-api/config/config-service';
+import { User } from './services/common/iam/user';
 
 let initialized = false;
 
@@ -15,8 +16,8 @@ let initialized = false;
  * @param password the users access code
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-async function verifyLogin(userEmail: string, password: string) {
-  const config = container.resolve<Config>('Config');
+async function verifyLogin(userEmail: string, password: string): Promise<User | null> {
+  const config = container.resolve<ConfigService>(ConfigService).getConfig();
   if (config.auth.type !== 'test') {
     return null;
   }

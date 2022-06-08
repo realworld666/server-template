@@ -1,5 +1,6 @@
 import { Body, Controller, Delete, Get, Patch, Post, Request, Route, Security, SuccessResponse, Tags } from 'tsoa';
 import ApiError from '../../api-error';
+import { User } from '../../services/common/iam/user';
 
 interface CrudObject {
   message: string;
@@ -15,7 +16,7 @@ export class CrudController extends Controller {
   @Get()
   @Security('local')
   @Security('default')
-  public async getMessage(@Request() request: any): Promise<CrudObject> {
+  public async getMessage(@Request() request: { user: User }): Promise<CrudObject> {
     return {
       message: request.user.email,
     };

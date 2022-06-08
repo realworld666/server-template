@@ -6,7 +6,7 @@ const mockSetupLocalStorageKey = 'mock-auth';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function configureCognito() {
-  ConfigControllerService.getConfig().then((config:any) => {
+  ConfigControllerService.getConfig().then((config:ConfigResponse) => {
     if (config.auth.type === 'aws') {
       console.log(JSON.stringify(config.auth));
       doConfigure(config);
@@ -94,8 +94,8 @@ async function tryGetCurrentSession() {
   }
 }
 
-function getQueryParams(url: string): any {
-  const qparams: any = {};
+function getQueryParams(url: string): {[key:string]:string} {
+  const qparams: {[key:string]:string} = {};
   const parts = (url || '').split('?');
 
   let qparts;
