@@ -24,8 +24,8 @@ This package is a lightweight dependency injection container for TypeScript/Java
 
 This package is overkill for a small API but used as good practice. It's a design pattern I like which helps reduce dependencies between different parts of the code base and adds support for swapping out implementations of certain modules which is especially useful in tests.
 
-# uisage
+# usage
 To run the project:
 1. Run `./install` to run all of the installers
 2. Run `./build` in the project root
-3Run `./start` to start the project. The API docs can be viewed and tested from http://localhost:8000/api-docs
+3. Run `./start` to start the project. The API docs can be viewed and tested from http://localhost:8000/api-docs
