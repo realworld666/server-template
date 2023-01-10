@@ -8,7 +8,8 @@
     "build:dev": "webpack --mode=development",
     "build:prod": "webpack --mode=production --node-env=production",
     "watch": "webpack --watch",
-    "serve": "webpack serve"
+    "serve": "webpack serve",
+    "clean": "rm -rf node_modules"
   },
   "dependencies": {
     "@aws-amplify/auth": "^3.4.16"
