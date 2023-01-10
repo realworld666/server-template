@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "clean": "rimraf dist node_modules",
+    "clean": "rm -rf dist node_modules",
     "lint": "eslint . --ext .ts",
     "lint:fix": "npm run lint -- --fix",
     "build": "tsc --build",
