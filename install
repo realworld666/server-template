@@ -1,0 +1,8 @@
+#!/bin/bash
+npm install
+pushd server || exit
+    npm install
+    pushd public || exit
+        npm install
+    popd || exit
+popd || exit

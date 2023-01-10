@@ -2,9 +2,6 @@
 
 set -e # stop on error
 
-if [ -z ${1+x} ]; then echo "Usage: ./build [STACK]"; exit 1; fi
-
-STACK=$1
 # Build server first as the client depends on server generated files
 pushd server
     npm i
