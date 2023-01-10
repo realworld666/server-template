@@ -13,6 +13,8 @@ import MockBootstrapService from './services/mock/bootstrap/mock-bootstrap-servi
 import FirebaseService from './services/google/bootstrap/firebase-service';
 import FirebaseIamService from './services/google/auth/firebase-iam-service';
 import FirestoreService from './services/google/database/firestore-service';
+import S3Service from './services/aws/storage/s3-service';
+import MockStorageService from './services/mock/storage/mock-storage-service';
 
 function registerConfigurable<T extends Configurable>(Service: { new (): T }, token: string) {
   const cachingFactory = instanceCachingFactory<T>((c) => c.resolve(Service));
@@ -37,6 +39,7 @@ export function installServices(type: string) {
       );
       registerConfigurable(MockIamService, 'IamService');
       registerConfigurable(MockDatabaseService, 'DatabaseService');
+      registerConfigurable(MockStorageService, 'StorageService');
       break;
     }
     case 'aws': {
@@ -48,6 +51,7 @@ export function installServices(type: string) {
       );
       registerConfigurable(AwsIamService, 'IamService');
       registerConfigurable(DynamoDbService, 'DatabaseService');
+      registerConfigurable(S3Service, 'StorageService');
       break;
     }
     case 'google': {
@@ -84,4 +88,5 @@ export function installMockServices() {
   );
   registerConfigurable(MockIamService, 'IamService');
   registerConfigurable(MockDatabaseService, 'DatabaseService');
+  registerConfigurable(MockStorageService, 'StorageService');
 }

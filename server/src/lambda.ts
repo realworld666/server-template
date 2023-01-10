@@ -1,16 +1,18 @@
-import { createServer, proxy } from 'aws-serverless-express';
+import 'reflect-metadata';
 import { container } from 'tsyringe';
 import { installServices } from './installer';
 import AppInterface from './app-interface';
 
-installServices('cognito');
+const awsServerlessExpress = require('aws-serverless-express');
+
+installServices('aws');
 
 const { app } = container.resolve<AppInterface>('AppInterface');
 
-const server = createServer(app);
+const server = awsServerlessExpress.createServer(app);
 
-const handler = (event: any, context: any) => {
-  return proxy(server, event, context);
+const handler = async (event: any, context: any) => {
+  return awsServerlessExpress.proxy(server, event, context, 'PROMISE').promise;
 };
 
 export default handler;

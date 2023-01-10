@@ -32,15 +32,15 @@ export default class MockDatabaseService implements DatabaseService, Configurabl
     return Promise.resolve(key);
   }
 
-  insert<T>(tableName: string, objectToInsert: T): Promise<string> {
-    return Promise.resolve('');
+  insert<T>(tableName: string, objectToInsert: T): Promise<void> {
+    return Promise.resolve(undefined);
   }
 
   insertWithId<T>(collectionPath: string, key: { [key: string]: any }, objectToInsert: T): Promise<void> {
     return Promise.resolve(undefined);
   }
 
-  update(tableName: string, key: { [p: string]: any }, partialObject: any): Promise<void> {
+  update<T>(tableName: string, key: { [p: string]: any }, partialObject: Partial<T>): Promise<void> {
     return Promise.resolve(undefined);
   }
 }
