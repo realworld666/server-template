@@ -103,8 +103,9 @@ export default class DynamoDbService implements DatabaseService, Configurable {
     }
   }
 
-  async insert<T>(tableName: string, objectToInsert: T) {
+  async insert<T>(tableName: string, objectToInsert: T): Promise<string | null> {
     await this.documentClient.put({ TableName: this.getTableName(tableName), Item: objectToInsert }).promise();
+    return null;
   }
 
   async insertWithId<T>(tableName: string, key: { [key: string]: any }, objectToInsert: T): Promise<void> {

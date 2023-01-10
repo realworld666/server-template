@@ -9,4 +9,14 @@ export default class MockStorageService implements StorageService, Configurable 
   getConfig(): {} {
     return { db: { type: 'test' } };
   }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  getPublicUrlForKey(bucket: string, key: string): string {
+    return '';
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  getSignedUrlForKey(bucket: string, key: string): string {
+    return '';
+  }
 }

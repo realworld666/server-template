@@ -2,9 +2,6 @@
 import 'reflect-metadata';
 import { container } from 'tsyringe';
 import chai, { expect } from 'chai';
-import { FieldType } from '../../common/database/database-field-definition';
-import AppConfigService from '../../common/config/app-config-service';
-import { MockAppConfigService } from '../../mock/config/mock-app-config-service';
 import { DatabaseService } from '../../common/database/database-service';
 import { setupFirebase } from '../../../test-helper.spec';
 import FirestoreService from './firestore-service';
