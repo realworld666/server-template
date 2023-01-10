@@ -1,8 +1,11 @@
 #!/bin/bash
+npm audit fix
 npm install
 pushd server || exit
+    npm audit fix
     npm install
     pushd public || exit
+        npm audit fix
         npm install
     popd || exit
 popd || exit
