@@ -15,6 +15,7 @@
   "parserOptions": {
     "project": "./src/tsconfig.json"
   },
+  "ignorePatterns": ["./generated"],
   "rules": {
     "no-console": "off",
     "no-plusplus": "off",

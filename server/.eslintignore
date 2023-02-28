@@ -4,3 +4,5 @@ node_modules
 dist
 # ignore the public folder
 public
+# ignore generated files
+generated
