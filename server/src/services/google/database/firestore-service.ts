@@ -66,7 +66,7 @@ export default class FirestoreService implements DatabaseService, Configurable {
     });
   }
 
-  async insert<T>(collectionPath: string, objectToInsert: T): Promise<string> {
+  async insert<T>(collectionPath: string, objectToInsert: T): Promise<string | null> {
     const result = await this.firestore.collection(collectionPath).add(objectToInsert);
     return result.id;
   }
@@ -98,6 +98,7 @@ export default class FirestoreService implements DatabaseService, Configurable {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private static buildDatabaseConfig(environment: typeof process.env): FirestoreConfig {
     return {
+      tablePrefix: '',
       type: 'firestore',
     };
   }

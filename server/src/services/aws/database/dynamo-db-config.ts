@@ -4,4 +4,6 @@ export interface DynamoDbConfig extends DatabaseConfig {
   type: 'dynamodb';
   region: string;
   endpoint?: string;
+  accessKeyId?: string;
+  secretAccessKey?: string;
 }

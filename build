@@ -4,10 +4,12 @@ set -e # stop on error
 
 # Build server first as the client depends on server generated files
 pushd server
+    npm run clean
     npm i
     npm run swagger
 
     pushd public
+        npm run clean
         npm i
         npm run build
     popd
@@ -17,6 +19,6 @@ pushd server
     cp package-lock.json ./dist/
 
     pushd dist
-        npm ci --audit --only=prod
+        npm ci --omit=dev
     popd
 popd

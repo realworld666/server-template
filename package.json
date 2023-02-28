@@ -8,7 +8,8 @@
   "scripts": {
     "build": "./build",
     "start": "./start",
-    "test": "./test-all"
+    "test": "./test-all",
+    "clean": "rm -rf node_modules"
   },
   "repository": {
     "type": "git",

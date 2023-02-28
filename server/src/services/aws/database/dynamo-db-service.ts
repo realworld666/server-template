@@ -13,7 +13,7 @@ interface AttributeDefinition {
 @singleton()
 @autoInjectable()
 export default class DynamoDbService implements DatabaseService, Configurable {
-  readonly requiredEnvironmentVariables: string[] = ['REGION'];
+  readonly requiredEnvironmentVariables: string[] = ['REGION', 'DYNAMODB_PREFIX'];
 
   private readonly dbConfig: DynamoDbConfig;
 
@@ -25,8 +25,18 @@ export default class DynamoDbService implements DatabaseService, Configurable {
     this.dbConfig = DynamoDbService.buildDatabaseConfig(process.env);
 
     if (this.dbConfig.endpoint) {
-      this.dynamoDb = new AWS.DynamoDB({ endpoint: this.dbConfig.endpoint });
-      this.documentClient = new AWS.DynamoDB.DocumentClient({ endpoint: this.dbConfig.endpoint });
+      this.dynamoDb = new AWS.DynamoDB({
+        region: this.dbConfig.region,
+        endpoint: this.dbConfig.endpoint,
+        accessKeyId: this.dbConfig.accessKeyId,
+        secretAccessKey: this.dbConfig.secretAccessKey,
+      });
+      this.documentClient = new AWS.DynamoDB.DocumentClient({
+        region: this.dbConfig.region,
+        endpoint: this.dbConfig.endpoint,
+        accessKeyId: this.dbConfig.accessKeyId,
+        secretAccessKey: this.dbConfig.secretAccessKey,
+      });
     } else {
       this.dynamoDb = new AWS.DynamoDB();
       this.documentClient = new AWS.DynamoDB.DocumentClient();
@@ -64,7 +74,7 @@ export default class DynamoDbService implements DatabaseService, Configurable {
     });
 
     const params = {
-      TableName: tableName,
+      TableName: this.getTableName(tableName),
       KeySchema: [
         { AttributeName: primaryKey, KeyType: 'HASH' }, // Partition key
       ],
@@ -84,19 +94,30 @@ export default class DynamoDbService implements DatabaseService, Configurable {
   }
 
   async deleteTable(tableName: string) {
-    await this.dynamoDb.deleteTable({ TableName: tableName }).promise();
+    try {
+      const result = await this.dynamoDb.deleteTable({ TableName: this.getTableName(tableName) }).promise();
+      console.log(JSON.stringify(result, null, 2));
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
   }
 
-  async insert<T>(tableName: string, objectToInsert: T): Promise<string> {
-    await this.documentClient.put({ TableName: tableName, Item: objectToInsert }).promise();
-    return '';
+  async insert<T>(tableName: string, objectToInsert: T): Promise<string | null> {
+    await this.documentClient.put({ TableName: this.getTableName(tableName), Item: objectToInsert }).promise();
+    return null;
   }
 
   async insertWithId<T>(tableName: string, key: { [key: string]: any }, objectToInsert: T): Promise<void> {
     await this.documentClient.put({ TableName: tableName, Item: objectToInsert }).promise();
   }
 
-  async update(tableName: string, key: { [key: string]: any }, partialObject: any) {
+  private getTableName(tableName: string) {
+    if (this.dbConfig.tablePrefix) return `${this.dbConfig.tablePrefix}-${tableName}`;
+    return tableName;
+  }
+
+  async update<T>(tableName: string, key: { [key: string]: any }, partialObject: Partial<T>) {
     let updateExpression = 'set';
     const ExpressionAttributeNames: { [key: string]: any } = {};
     const ExpressionAttributeValues: { [key: string]: any } = {};
@@ -113,7 +134,7 @@ export default class DynamoDbService implements DatabaseService, Configurable {
 
     await this.documentClient
       .update({
-        TableName: tableName,
+        TableName: this.getTableName(tableName),
         Key: key,
         UpdateExpression: updateExpression,
         ExpressionAttributeNames,
@@ -123,12 +144,12 @@ export default class DynamoDbService implements DatabaseService, Configurable {
   }
 
   async get<T>(tableName: string, key: { [key: string]: any }): Promise<T> {
-    const result = await this.documentClient.get({ TableName: tableName, Key: key }).promise();
+    const result = await this.documentClient.get({ TableName: this.getTableName(tableName), Key: key }).promise();
     return result.Item as T;
   }
 
   async delete(tableName: string, key: { [key: string]: any }) {
-    await this.documentClient.delete({ TableName: tableName, Key: key }).promise();
+    await this.documentClient.delete({ TableName: this.getTableName(tableName), Key: key }).promise();
   }
 
   private static buildDatabaseConfig(environment: typeof process.env): DynamoDbConfig {
@@ -136,6 +157,9 @@ export default class DynamoDbService implements DatabaseService, Configurable {
       type: 'dynamodb',
       region: environment.REGION!,
       endpoint: environment.DB_ENDPOINT,
+      tablePrefix: environment.DYNAMODB_PREFIX!,
+      accessKeyId: environment.AWS_ACCESS_KEY_ID,
+      secretAccessKey: environment.AWS_SECRET_ACCESS_KEY,
     };
   }
 }
