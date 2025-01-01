@@ -17,7 +17,6 @@
     "allowJs": true
   },
   "files": [
-    "auth.ts",
-    "globals.d.ts"
+    "auth.ts"
   ]
 }
