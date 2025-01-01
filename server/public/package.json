@@ -12,7 +12,7 @@
     "clean": "rm -rf node_modules"
   },
   "dependencies": {
-    "@aws-amplify/auth": "^6.9.0"
+    "aws-amplify": "^6.11.0"
   },
   "devDependencies": {
     "css-loader": "^6.7.1",

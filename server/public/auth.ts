@@ -1,7 +1,6 @@
-import { CognitoUser } from 'amazon-cognito-identity-js';
-import { Auth } from '@aws-amplify/auth';
 import {ConfigControllerService, ConfigResponse, RegisterData, UserControllerService} from "../generated";
-
+import { Amplify } from "aws-amplify";
+import { confirmSignIn, fetchAuthSession, signIn } from "aws-amplify/auth";
 const mockSetupLocalStorageKey = 'mock-auth';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -17,10 +16,13 @@ export function configureCognito() {
 }
 
 function doConfigure(config: ConfigResponse) {
-  Auth.configure({
-    region: config.auth.region,
-    userPoolId: config.auth.userPoolId,
-    userPoolWebClientId: config.auth.clientId,
+  Amplify.configure({
+    Auth:{
+      Cognito:{
+        userPoolId: config.auth.userPoolId,
+        userPoolClientId: config.auth.clientId
+      }
+    }
   });
 }
 
@@ -35,19 +37,30 @@ export async function requestCode() {
     email: email,
     action: RegisterData.action.REGISTER,
   };
+
   try {
     const user = await UserControllerService.registerUser(data);
 
     console.log(`Email: '${email}'`);
     const config = await ConfigControllerService.getConfig();
     doConfigure(config);
-    window.loggedInUser = await Auth.signIn(email.toLowerCase());
+
+    const { isSignedIn, nextStep } = await signIn({ username: email.toLowerCase() });
+
+    if (isSignedIn) {
+      console.log('User signed in successfully');
+    } else if (nextStep.signInStep === 'CONFIRM_SIGN_IN_WITH_CUSTOM_CHALLENGE') {
+      console.log('Custom challenge required');
+    } else {
+      console.log('Unexpected sign-in step:', nextStep.signInStep);
+    }
 
     // Switch forms
-    const emailForm = (document.querySelector<HTMLInputElement>('#form1')!.style.display = 'none');
-    const codeForm = (document.querySelector<HTMLInputElement>('#form2')!.style.display = 'initial');
+    document.querySelector<HTMLElement>('#form1')!.style.display = 'none';
+    document.querySelector<HTMLElement>('#form2')!.style.display = 'initial';
   } catch (e) {
-    alert(e.message);
+    console.error('Error during registration or sign-in:', e);
+    alert(e.message || 'An error occurred during registration or sign-in');
     throw e;
   }
 }
@@ -55,12 +68,13 @@ export async function requestCode() {
 export async function validateCode() {
   const code = document.querySelector<HTMLInputElement>('#code')?.value ?? '';
 
-  if (window.loggedInUser === undefined) throw new Error('Logged in  user not set');
-
-  // Retrieve AWS user
-  const user: CognitoUser = await Auth.sendCustomChallengeAnswer(window.loggedInUser, code);
-
-  return user.getSignInUserSession() !== null;
+  try {
+    const { isSignedIn } = await confirmSignIn({ challengeResponse: code });
+    return isSignedIn;
+  } catch (error) {
+    console.error('Error validating code:', error);
+    return false;
+  }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -70,26 +84,37 @@ export async function performLogin(): Promise<void> {
     alert('Could not validate the code');
     return;
   }
+  try {
+    const { tokens } = await fetchAuthSession();
+    if (!tokens) {
+      console.log('No active session found');
+      return;
+    }
+    const idToken = tokens.idToken;
+    const jwtToken = idToken.toString();
 
-  // get jwt token
-  const session = await tryGetCurrentSession();
-  if (session === undefined) {
-    return undefined;
+    const queryParams = new URLSearchParams(window.location.search);
+    const redirectUri = queryParams.get('redirect_uri');
+    const state = queryParams.get('state');
+    if (!redirectUri || !state) {
+      console.error('Missing required query parameters');
+      return;
+    }
+
+    const redirectUrl = `${redirectUri}#access_token=${encodeURIComponent(jwtToken)}&state=${encodeURIComponent(state)}&response_type=token`;
+    window.location.href = redirectUrl;
   }
-  const accessToken = session.getIdToken();
-  const credentials = accessToken.getJwtToken();
-
-  const queryParams = getQueryParams(window.location.href);
-  const redirectUrl = `${queryParams.redirect_uri}#access_token=${encodeURIComponent(
-    credentials
-  )}&state=${encodeURIComponent(queryParams.state)}&response_type=token`;
-  window.location.href = redirectUrl;
+  catch (error) {
+    console.error('Error fetching session:', error);
+  }
 }
 
 async function tryGetCurrentSession() {
   try {
-    return await Auth.currentSession();
+    const { tokens } = await fetchAuthSession();
+    return tokens;
   } catch (err) {
+    console.error('Error fetching auth session:', err);
     return undefined;
   }
 }
