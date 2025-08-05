@@ -2,7 +2,7 @@
 
 # swagger-backend-api-sample
 
-This is a sample project to use as a base for a REST Api. The project uses two core packages to facilitate this; `tsoa` and `tsyringe`
+This is a sample project from 2022 that could be used as a base for a monolith REST Api. Much of the functionality implemented in this project has since been provided in a JavaScript framework, Nest.js, but it serves an example of how I would have implemented a monolith 3 years ago. The project uses two core packages; `tsoa` and `tsyringe`, which are described below. 
 
 # requirements
 * `node 16.18`
